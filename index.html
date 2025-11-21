@@ -1,0 +1,274 @@
+{% extends "import.html" %}
+{% block content %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(-45deg, #1e3c72, #2a5298, #0f2027, #203a43);
+        background-size: 400% 400%;
+        animation: gradientMove 15s ease infinite;
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    @keyframes gradientMove {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+
+    .info-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+    }
+
+    .info-card {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        width: 300px;
+        padding: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(15px);
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover { transform: translateY(-5px); }
+    .info-card h3 { font-size: 20px; color: #00e0ff; margin-bottom: 10px; }
+
+    .show-more-btn {
+        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: bold;
+        margin-top: 10px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .show-more-btn:hover { transform: scale(1.05); }
+
+    .info-content { display: none; margin-top: 10px; text-align: left; animation: fadeIn 0.5s ease-in-out; }
+
+    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
+    .info-content ul { list-style: disc; padding-left: 20px; margin-top: 8px; }
+
+    .main-container {
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 50px;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 60px auto;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        text-align: center;
+    }
+
+    h2 { color: #fff; font-size: 28px; margin-bottom: 20px; letter-spacing: 1px; }
+
+    input[type="file"] { display: none; }
+
+    .upload-label {
+        display: inline-block;
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: #fff;
+        padding: 12px 25px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.4s;
+        font-weight: bold;
+    }
+
+    .upload-label:hover { background: linear-gradient(135deg, #0072ff, #00c6ff); transform: scale(1.05); }
+
+    .btn-info {
+        background: linear-gradient(135deg, #00b09b, #96c93d);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: bold;
+    }
+
+    .btn-info:hover { transform: scale(1.05); background: linear-gradient(135deg, #96c93d, #00b09b); }
+
+    .logout-btn, .contact-btn {
+        position: absolute;
+        top: 25px;
+        padding: 10px 22px;
+        border-radius: 50px;
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .logout-btn { right: 30px; background: #ff4b5c; }
+    .contact-btn { right: 140px; background: #28a745; }
+
+    .logout-btn:hover { background: #d7263d; transform: scale(1.05); }
+    .contact-btn:hover { background: #218838; transform: scale(1.05); }
+
+    .image-section { display: none; margin-top: 25px; }
+
+    #imagePreview {
+        width: 300px;
+        height: 300px;
+        border-radius: 15px;
+        border: 2px solid rgba(255,255,255,0.3);
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        object-fit: cover;
+    }
+
+    .loader {
+        border: 6px solid rgba(255,255,255,0.3);
+        border-top: 6px solid #00c6ff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 25px auto;
+        display: none;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #result { margin-top: 20px; font-size: 20px; font-weight: bold; }
+    #result span { color: #00e0ff; }
+</style>
+
+<a href="/contact" class="contact-btn">📞 Contact</a>
+<a href="/logout" class="logout-btn">🚪 Logout</a>
+
+<!-- INFO CARDS -->
+<div class="info-container">
+    <div class="info-card" id="card1">
+        <h3>📊 Model Accuracy</h3>
+        <p>VGG19-based Model</p>
+        <button class="show-more-btn" onclick="toggleSection('content1', this)">Show More</button>
+        <div class="info-content" id="content1">
+            <p>Our model achieves a <b>99.9% accuracy</b> rate for brain tumor classification using deep learning.</p>
+            <p>This reliability ensures highly confident results in tumor detection and diagnosis support.</p>
+        </div>
+    </div>
+
+    <div class="info-card" id="card2">
+        <h3>🩺 Common Symptoms</h3>
+        <p>Early Detection Helps</p>
+        <button class="show-more-btn" onclick="toggleSection('content2', this)">Show More</button>
+        <div class="info-content" id="content2">
+            <ul>
+                <li>Severe or frequent headaches</li>
+                <li>Vision changes or double vision</li>
+                <li>Nausea or vomiting</li>
+                <li>Loss of coordination or balance</li>
+                <li>Speech difficulty or confusion</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-card" id="card3">
+        <h3>🧘‍♀️ Precautionary Measures</h3>
+        <p>Stay Healthy & Safe</p>
+        <button class="show-more-btn" onclick="toggleSection('content3', this)">Show More</button>
+        <div class="info-content" id="content3">
+            <ul>
+                <li>Maintain a balanced diet</li>
+                <li>Avoid radiation exposure</li>
+                <li>Quit smoking and reduce alcohol</li>
+                <li>Sleep well and manage stress</li>
+                <li>Regular medical checkups</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN INTERFACE -->
+<center>
+    <div class="main-container">
+        <h2>🧠 Brain Tumor Prediction Using Deep Learning</h2>
+
+        <form id="upload-file" method="post" enctype="multipart/form-data">
+            <label class="upload-label" for="imageUpload">📤 Upload an Image</label>
+            <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg">
+        </form>
+
+        <button type="button" class="btn-info" id="btn-predict">🔍 Get Result</button>
+
+        <div class="loader"></div>
+
+        <div class="image-section" id="imageSection">
+            <img id="imagePreview" src="#" alt="Prediction Image"/>
+        </div>
+
+        <h3 id="result"><span></span></h3>
+    </div>
+</center>
+
+<script>
+let selectedFile = null;
+
+document.getElementById('imageUpload').addEventListener('change', function(){
+    if (this.files && this.files[0]) {
+        selectedFile = this.files[0];
+        document.getElementById('result').innerHTML = "";
+        // Don't show preview yet
+        document.getElementById('imageSection').style.display = 'none';
+    }
+});
+
+document.getElementById('btn-predict').addEventListener('click', function(){
+    if (!selectedFile) { alert("⚠️ Please upload an image first!"); return; }
+
+    const form_data = new FormData();
+    form_data.append('file', selectedFile);
+
+    document.querySelector('.loader').style.display = 'block';
+    document.getElementById('result').innerHTML = "<span>Processing...</span>";
+    document.getElementById('imageSection').style.display = 'none';
+
+    fetch('/predict', { method: 'POST', body: form_data })
+    .then(response => response.json())
+    .then(data => {
+        document.querySelector('.loader').style.display = 'none';
+        document.getElementById('result').innerHTML = "<span>🧬 " + data.result + "</span>";
+
+        // Only show preview now
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imageSection').style.display = 'block';
+        };
+        reader.readAsDataURL(selectedFile);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.querySelector('.loader').style.display = 'none';
+        document.getElementById('result').innerHTML = "<span style='color:red;'>❌ Error processing image.</span>";
+    });
+});
+
+function toggleSection(id, btn) {
+    const section = document.getElementById(id);
+    const isVisible = section.style.display === "block";
+
+    document.querySelectorAll(".info-content").forEach(s => s.style.display = "none");
+    document.querySelectorAll(".show-more-btn").forEach(b => b.textContent = "Show More");
+
+    if (!isVisible) { section.style.display = "block"; btn.textContent = "Hide Info"; }
+}
+</script>
+
+{% endblock %}
