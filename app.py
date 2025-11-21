@@ -1,29 +1,29 @@
 import os
 import numpy as np
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-import werkzeug
 from werkzeug.utils import secure_filename
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 
 # --------------------------
-# Configuration
+# Folder Configuration
 # --------------------------
-PROJECT_ROOT = r"C:\Users\yashwanth\Music\brain tumor"
-TEMPLATE_FOLDER = os.path.join(PROJECT_ROOT, "templates")
-STATIC_FOLDER = os.path.join(PROJECT_ROOT, "static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_FOLDER = os.path.join(BASE_DIR, "templates")
+STATIC_FOLDER = os.path.join(BASE_DIR, "static")
 UPLOAD_FOLDER = os.path.join(STATIC_FOLDER, "uploads")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 app.secret_key = "supersecretkey123"
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 # --------------------------
 # Load Model
 # --------------------------
-MODEL_PATH = os.path.join(PROJECT_ROOT, "brain_tumor_model1.h5")
+MODEL_PATH = os.path.join(BASE_DIR, "brain_tumor_model1.h5")
 model = tf.keras.models.load_model(MODEL_PATH)
 
 class_names = ['glioma', 'meningioma', 'notumor', 'pituitary']
@@ -42,8 +42,6 @@ def predict_image(img_path):
     predicted_class = class_names[predicted_idx]
     confidence = preds[predicted_idx] * 100
 
-    print(f"Prediction: {predicted_class} ({confidence:.2f}%)")
-
     return predicted_class, confidence
 
 
@@ -52,6 +50,7 @@ def predict_image(img_path):
 # --------------------------
 USERNAME = "admin"
 PASSWORD = "123456"
+
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -107,8 +106,6 @@ def predict():
     save_path = os.path.join(UPLOAD_FOLDER, filename)
     file.save(save_path)
 
-    print(f"Saved image at: {save_path}")
-
     # Prediction
     predicted_class, confidence = predict_image(save_path)
 
@@ -122,4 +119,4 @@ def predict():
 # Run Server
 # --------------------------
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=5000)
