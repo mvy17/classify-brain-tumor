@@ -23,7 +23,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # --------------------------
 # Load Model
 # --------------------------
-MODEL_PATH = os.path.join(BASE_DIR, "brain_tumor_model1.h5")
+MODEL_PATH = os.path.join(BASE_DIR, "brain_tumor_model.h5")
 model = tf.keras.models.load_model(MODEL_PATH)
 
 class_names = ['glioma', 'meningioma', 'notumor', 'pituitary']
@@ -120,3 +120,4 @@ def predict():
 # --------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
