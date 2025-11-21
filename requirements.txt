@@ -2,7 +2,9 @@ Flask
 tensorflow
 numpy
 pillow
+werkzeug
 gunicorn
+
 
 
 
